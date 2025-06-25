@@ -1,4 +1,4 @@
-import { useEffect, useRef, type JSX } from "react";
+import { useEffect, useRef, useState, type JSX } from "react";
 import * as echarts from "echarts";
 
 function Chart({
@@ -7,28 +7,47 @@ function Chart({
   inflationRate,
   investmentReturnRate,
 }: {
-  balance: number;
-  expense: number;
-  inflationRate: number;
-  investmentReturnRate: number;
+  balance: number | null;
+  expense: number | null;
+  inflationRate: number | null;
+  investmentReturnRate: number | null;
 }): JSX.Element {
   const chartRef = useRef<HTMLDivElement>(null);
+  const [year, setYear] = useState<number>(0);
+  const [isValid, setIsVaild] = useState<boolean>(false);
 
   useEffect(() => {
-    // 模拟每年资产计算
+    console.log(balance, expense, inflationRate, investmentReturnRate);
+    if (
+      balance == null ||
+      expense == null ||
+      inflationRate == null ||
+      investmentReturnRate == null
+    ) {
+      setIsVaild(false);
+      return;
+    }
+    setIsVaild(true);
     const data: [number, number][] = [[0, balance]];
     let currentBalance = balance;
     let currentExpense = expense;
 
     while (currentBalance > 0 && data.length < 100) {
-      currentExpense *= 1 + inflationRate;
-      currentBalance -= currentExpense;
-      currentBalance *= 1 + investmentReturnRate;
-      if (currentBalance >= 0) {
+      if (currentBalance - currentExpense >= 0) {
+        currentBalance -= currentExpense;
+        currentExpense *= 1 + inflationRate;
+        currentBalance *= 1 + investmentReturnRate;
         data.push([data.length, currentBalance]);
       } else {
-        // To do
+        const lastyear = currentBalance / currentExpense + data.length;
+        data.push([lastyear, 0]);
+        currentBalance = 0;
       }
+    }
+    if (data.length == 100 && data[data.length - 1][1] > 0) {
+      setYear(101);
+    } else {
+      setYear(data.length);
     }
 
     if (!chartRef.current) return;
@@ -39,7 +58,7 @@ function Chart({
         name: "年数",
       },
       yAxis: {
-        name: "剩余资产",
+        name: "剩余资金",
       },
       series: [
         {
@@ -50,14 +69,30 @@ function Chart({
       ],
     });
 
+    const handleResize = () => {
+      chart.resize();
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
       chart.dispose();
+      window.removeEventListener("resize", handleResize);
     };
   }, [balance, expense, inflationRate, investmentReturnRate]);
 
   return (
     <>
-      <div ref={chartRef} style={{ width: "100%", height: "500px" }} />;
+      {isValid ? (
+        year > 100 ? (
+          <div className="px-8">还能活超过 100 年</div>
+        ) : (
+          <div className="px-8">还能活 {year} 年</div>
+        )
+      ) : (
+        <div className="px-8">数据不完整，无法计算</div>
+      )}
+      <div ref={chartRef} style={{ width: "100%", height: "500px" }} />
     </>
   );
 }
