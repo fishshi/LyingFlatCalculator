@@ -101,12 +101,14 @@ function LyingFlatCalculator(): JSX.Element {
         参考公式： 第 n 年的剩余资金 = (第 n-1 年的剩余资金 - 初始年支出 * (1 +
         年通膨率) ^ (n - 1)) * (1 + 投资年化收益率)
       </div>
-      <Chart
-        balance={balance}
-        expense={expense}
-        inflationRate={inflationRate}
-        investmentReturnRate={investmentReturnRate}
-      />
+      <div className='px-8'>
+        <Chart
+          balance={balance}
+          expense={expense}
+          inflationRate={inflationRate}
+          investmentReturnRate={investmentReturnRate}
+        />
+      </div>
     </div>
   );
 }
