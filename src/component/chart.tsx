@@ -37,6 +37,7 @@ function Chart({
         currentBalance -= currentExpense;
         currentExpense *= 1 + inflationRate;
         currentBalance *= 1 + investmentReturnRate;
+        if (currentBalance.toFixed(2) == "0.00") currentBalance = 0;
         data.push([data.length, currentBalance]);
       } else {
         const lastyear = currentBalance / currentExpense + data.length - 1;
@@ -58,6 +59,20 @@ function Chart({
       grid: {
         left: width < 640 ? 70 : 88,
         right: 40,
+      },
+      tooltip: {
+        trigger: "axis",
+        formatter: (params): string => {
+          const value = params[0].value;
+          const year = value[0];
+          const leftBalance = value[1];
+          return (
+            Number(year.toFixed(2)) +
+            " 年后剩余 " +
+            leftBalance.toFixed(2) +
+            " 元"
+          );
+        },
       },
       xAxis: {
         name: "年数",
@@ -98,7 +113,7 @@ function Chart({
         year > 100 ? (
           <div>还能活超过 100 年</div>
         ) : (
-          <div>还能活 {year.toFixed(2)} 年</div>
+          <div>还能活 {Number(year.toFixed(2))} 年</div>
         )
       ) : (
         <div>数据不完整，无法计算</div>
