@@ -47,7 +47,7 @@ function Chart({
     if (data.length == 100 && data[data.length - 1][1] > 0) {
       setYear(101);
     } else {
-      setYear(data.length);
+      setYear(data[data.length - 1][0]);
     }
 
     if (!chartRef.current) return;
