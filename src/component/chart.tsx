@@ -39,7 +39,7 @@ function Chart({
         currentBalance *= 1 + investmentReturnRate;
         data.push([data.length, currentBalance]);
       } else {
-        const lastyear = currentBalance / currentExpense + data.length;
+        const lastyear = currentBalance / currentExpense + data.length - 1;
         data.push([lastyear, 0]);
         currentBalance = 0;
       }
@@ -53,7 +53,12 @@ function Chart({
     if (!chartRef.current) return;
     const chart = echarts.init(chartRef.current);
 
+    const width = chartRef.current?.clientWidth || 0;
     chart.setOption({
+      grid: {
+        left: width < 640 ? 70 : 88,
+        right: 40,
+      },
       xAxis: {
         name: "年数",
       },
@@ -70,6 +75,12 @@ function Chart({
     });
 
     const handleResize = () => {
+      const width = chartRef.current?.clientWidth || 0;
+      chart.setOption({
+        grid: {
+          left: width < 640 ? 70 : 88,
+        },
+      });
       chart.resize();
     };
 
@@ -87,7 +98,7 @@ function Chart({
         year > 100 ? (
           <div>还能活超过 100 年</div>
         ) : (
-          <div>还能活 {year} 年</div>
+          <div>还能活 {year.toFixed(2)} 年</div>
         )
       ) : (
         <div>数据不完整，无法计算</div>
