@@ -85,12 +85,12 @@ function Chart({
     <>
       {isValid ? (
         year > 100 ? (
-          <div className="px-8">还能活超过 100 年</div>
+          <div>还能活超过 100 年</div>
         ) : (
-          <div className="px-8">还能活 {year} 年</div>
+          <div>还能活 {year} 年</div>
         )
       ) : (
-        <div className="px-8">数据不完整，无法计算</div>
+        <div>数据不完整，无法计算</div>
       )}
       <div ref={chartRef} style={{ width: "100%", height: "500px" }} />
     </>
