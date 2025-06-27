@@ -62,7 +62,7 @@ function Chart({
       },
       tooltip: {
         trigger: "axis",
-        formatter: (params): string => {
+        formatter: (params: Array<{ value: [number, number] }>): string => {
           const value = params[0].value;
           const year = value[0];
           const leftBalance = value[1];
