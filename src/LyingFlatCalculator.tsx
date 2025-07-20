@@ -1,4 +1,5 @@
 import { useEffect, useState, type JSX } from "react";
+import { MathJax, MathJaxContext } from "better-react-mathjax";
 import Chart from "./component/chart";
 
 function LyingFlatCalculator(): JSX.Element {
@@ -11,6 +12,7 @@ function LyingFlatCalculator(): JSX.Element {
       setBalance(Number(balanceInput));
     }
   }, [balanceInput]);
+
   const [expense, setExpense] = useState<number | null>(null);
   const [expenseInput, setExpenseInput] = useState<string>("");
   useEffect(() => {
@@ -20,6 +22,7 @@ function LyingFlatCalculator(): JSX.Element {
       setExpense(Number(expenseInput));
     }
   }, [expenseInput]);
+
   const [inflationRate, setInflationRate] = useState<number | null>(0.03);
   const [inflationRateInput, setInflationRateInput] = useState<string>("0.03");
   useEffect(() => {
@@ -29,6 +32,7 @@ function LyingFlatCalculator(): JSX.Element {
       setInflationRate(Number(inflationRateInput));
     }
   }, [inflationRateInput]);
+
   const [investmentReturnRate, setInvestmentReturnRate] = useState<
     number | null
   >(null);
@@ -44,6 +48,38 @@ function LyingFlatCalculator(): JSX.Element {
       setInvestmentReturnRate(Number(investmentReturnRateInput));
     }
   }, [investmentReturnRateInput]);
+
+  const largeEquation = String.raw`
+              \[
+                \text{第 n 年剩余资金} = (\text{第 n 年的初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \cdot (1 + \text{年化收益率})
+              \]
+            `;
+  const middleEquation = String.raw`
+              \[
+                \begin{align}
+                  &\text{第 n 年剩余资金} \\
+                  &\quad = (\text{第 n 年的初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \cdot (1 + \text{年化收益率})
+                \end{align}
+              \]
+            `;
+  const smallEquation = String.raw`
+              \[
+                \begin{align}
+                  &\text{第 n 年剩余资金} \\
+                  &= (\text{第 n 年的初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \\
+                  &\quad \quad \cdot (1 + \text{年化收益率})
+                \end{align}
+              \]
+            `;
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  useEffect(() => {
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex flex-grow justify-between">
@@ -109,8 +145,29 @@ function LyingFlatCalculator(): JSX.Element {
         </div>
       </div>
       <div className="px-8">
-        参考公式： 第 n 年的剩余资金 = (第 n-1 年的剩余资金 - 初始年支出 * (1 +
-        年通膨率) ^ (n - 1)) * (1 + 投资年化收益率)
+        <p>参考公式：</p>
+        <MathJaxContext
+          config={{
+            loader: { load: ["input/tex", "output/chtml"] },
+            options: {
+              renderActions: {
+                addMenu: [],
+              },
+            },
+          }}
+        >
+          <MathJax className="select-none">
+            {(() => {
+              if (windowWidth >= 768) {
+                return largeEquation;
+              } else if (windowWidth >= 640) {
+                return middleEquation;
+              } else {
+                return smallEquation;
+              }
+            })()}
+          </MathJax>
+        </MathJaxContext>
       </div>
       <div className="px-8">
         <Chart
