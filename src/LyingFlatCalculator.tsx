@@ -72,6 +72,11 @@ function LyingFlatCalculator(): JSX.Element {
               \]
             `;
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const renderedEquation = (() => {
+    if (windowWidth >= 768) return largeEquation;
+    if (windowWidth >= 640) return middleEquation;
+    return smallEquation;
+  })();
   useEffect(() => {
     function handleResize() {
       setWindowWidth(window.innerWidth);
@@ -156,16 +161,8 @@ function LyingFlatCalculator(): JSX.Element {
             },
           }}
         >
-          <MathJax className="select-none">
-            {(() => {
-              if (windowWidth >= 768) {
-                return largeEquation;
-              } else if (windowWidth >= 640) {
-                return middleEquation;
-              } else {
-                return smallEquation;
-              }
-            })()}
+          <MathJax key={renderedEquation} className="select-none">
+            {renderedEquation}
           </MathJax>
         </MathJaxContext>
       </div>
