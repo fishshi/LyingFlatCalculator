@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import type { JSX } from "react";
 
 function NumberInput({
@@ -11,20 +12,46 @@ function NumberInput({
   value: string;
   onChange: (value: string) => void;
   title?: string;
-  step?: number;
+  step: number;
 }): JSX.Element {
+  const toFixedValue = step > 1 ? 0 : 2;
+  const handleStep = (direction: "up" | "down") => {
+    const num: Decimal = new Decimal(value);
+    let newVal = direction === "up" ? num.plus(step) : num.sub(step);
+    if (newVal.lt(0)) newVal = new Decimal(0);
+    onChange(newVal.toFixed(toFixedValue));
+  };
+
   return (
-    <div className="flex flex-grow flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <div>{label}</div>
-      <input
-        className="w-full h-16 px-2 rounded border text-lg"
-        type="number"
-        title={title || label}
-        step={step}
-        min={0}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
+      <div className="relative flex items-center">
+        <input
+          className="w-full h-16 px-2 pr-12 rounded border text-lg"
+          type="number"
+          title={title || label}
+          step={step}
+          min={0}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex flex-col">
+          <button
+            type="button"
+            className="text-xl leading-none px-1"
+            onClick={() => handleStep("up")}
+          >
+            ▲
+          </button>
+          <button
+            type="button"
+            className="text-xl leading-none px-1"
+            onClick={() => handleStep("down")}
+          >
+            ▼
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

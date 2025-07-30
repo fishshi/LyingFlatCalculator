@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type JSX } from "react";
 import * as echarts from "echarts";
+import Decimal from "decimal.js";
 
 function Chart({
   balance,
@@ -28,23 +29,28 @@ function Chart({
     }
     setIsVaild(true);
     const data: [number, number][] = [[0, balance]];
-    let currentBalance = balance;
-    let currentExpense = expense;
+    let currentBalance: Decimal = new Decimal(balance);
+    let currentExpense: Decimal = new Decimal(expense);
 
-    while (currentBalance > 0 && data.length < 100) {
-      if (currentBalance - currentExpense >= 0) {
-        currentBalance -= currentExpense;
-        currentExpense *= 1 + inflationRate / 100;
-        currentBalance *= 1 + investmentReturnRate / 100;
-        if (currentBalance.toFixed(2) == "0.00") currentBalance = 0;
-        data.push([data.length, currentBalance]);
+    while (currentBalance.gt(0) && data.length <= 100) {
+      if (currentBalance.sub(currentExpense).gte(0)) {
+        currentBalance = currentBalance.sub(currentExpense);
+        currentExpense = currentExpense.mul(
+          new Decimal(inflationRate).div(100).plus(1)
+        );
+        currentBalance = currentBalance.mul(
+          new Decimal(investmentReturnRate).div(100).plus(1)
+        );
+        data.push([data.length, currentBalance.toNumber()]);
       } else {
-        const lastyear = currentBalance / currentExpense + data.length - 1;
-        data.push([lastyear, 0]);
-        currentBalance = 0;
+        const lastyear: Decimal = currentBalance
+          .div(currentExpense)
+          .plus(data.length - 1);
+        data.push([lastyear.toNumber(), 0]);
+        currentBalance = new Decimal(0);
       }
     }
-    if (data.length == 100 && data[data.length - 1][1] > 0) {
+    if (data.length == 101 && data[data.length - 1][1] > 0) {
       setYear(101);
     } else {
       setYear(data[data.length - 1][0]);
