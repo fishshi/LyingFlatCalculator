@@ -1,10 +1,11 @@
 import { useEffect, useState, type JSX } from "react";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
-import Chart from "./component/chart";
+import Chart from "./component/Chart";
+import NumberInput from "./component/NumberInput";
 
 function LyingFlatCalculator(): JSX.Element {
-  const [balance, setBalance] = useState<number | null>(null);
-  const [balanceInput, setBalanceInput] = useState<string>("");
+  const [balance, setBalance] = useState<number | null>(3000000);
+  const [balanceInput, setBalanceInput] = useState<string>("3000000");
   useEffect(() => {
     if (balanceInput == "" || isNaN(Number(balanceInput))) {
       setBalance(null);
@@ -13,8 +14,8 @@ function LyingFlatCalculator(): JSX.Element {
     }
   }, [balanceInput]);
 
-  const [expense, setExpense] = useState<number | null>(null);
-  const [expenseInput, setExpenseInput] = useState<string>("");
+  const [expense, setExpense] = useState<number | null>(60000);
+  const [expenseInput, setExpenseInput] = useState<string>("60000");
   useEffect(() => {
     if (expenseInput == "" || isNaN(Number(expenseInput))) {
       setExpense(null);
@@ -23,8 +24,8 @@ function LyingFlatCalculator(): JSX.Element {
     }
   }, [expenseInput]);
 
-  const [inflationRate, setInflationRate] = useState<number | null>(0.03);
-  const [inflationRateInput, setInflationRateInput] = useState<string>("0.03");
+  const [inflationRate, setInflationRate] = useState<number | null>(3.0);
+  const [inflationRateInput, setInflationRateInput] = useState<string>("3.00");
   useEffect(() => {
     if (inflationRateInput == "" || isNaN(Number(inflationRateInput))) {
       setInflationRate(null);
@@ -35,9 +36,9 @@ function LyingFlatCalculator(): JSX.Element {
 
   const [investmentReturnRate, setInvestmentReturnRate] = useState<
     number | null
-  >(null);
+  >(2.0);
   const [investmentReturnRateInput, setInvestmentReturnRateInput] =
-    useState<string>("");
+    useState<string>("2.00");
   useEffect(() => {
     if (
       investmentReturnRateInput == "" ||
@@ -51,14 +52,14 @@ function LyingFlatCalculator(): JSX.Element {
 
   const largeEquation = String.raw`
               \[
-                \text{第 n 年剩余资金} = (\text{第 n 年的初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \cdot (1 + \text{年化收益率})
+                \text{第 n 年剩余资金} = (\text{第 n 年初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \cdot (1 + \text{年化收益率})
               \]
             `;
   const middleEquation = String.raw`
               \[
                 \begin{align}
                   &\text{第 n 年剩余资金} \\
-                  &\quad = (\text{第 n 年的初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \cdot (1 + \text{年化收益率})
+                  &\quad = (\text{第 n 年初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \cdot (1 + \text{年化收益率})
                 \end{align}
               \]
             `;
@@ -66,8 +67,8 @@ function LyingFlatCalculator(): JSX.Element {
               \[
                 \begin{align}
                   &\text{第 n 年剩余资金} \\
-                  &= (\text{第 n 年的初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \\
-                  &\quad \quad \cdot (1 + \text{年化收益率})
+                  &= (\text{第 n 年初始资金} - \text{初始支出} \cdot (1 + \text{通膨率})^{n - 1}) \\
+                  &\quad \quad \cdot \; (1 + \text{年化收益率})
                 \end{align}
               \]
             `;
@@ -99,57 +100,37 @@ function LyingFlatCalculator(): JSX.Element {
           </svg>
         </a>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 p-8">
-        <div className="flex flex-grow flex-col gap-2">
-          <div>初始资金</div>
-          <input
-            className="w-full h-16 px-2 rounded border text-lg"
-            title="初始资金"
-            type="number"
-            step={1000}
-            min={0}
-            value={balanceInput}
-            onChange={(e) => setBalanceInput(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-grow flex-col gap-2">
-          <div>年支出（初始）</div>
-          <input
-            className="w-full h-16 px-2 rounded border text-lg"
-            title="（预计）今年支出"
-            type="number"
-            step={1000}
-            min={0}
-            value={expenseInput}
-            onChange={(e) => setExpenseInput(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-grow flex-col gap-2">
-          <div>年通膨率</div>
-          <input
-            className="w-full h-16 px-2 rounded border text-lg"
-            title="年通膨率（推荐记为0.03）"
-            type="number"
-            step={0.01}
-            min={0}
-            value={inflationRateInput}
-            onChange={(e) => setInflationRateInput(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-grow flex-col gap-2">
-          <div>投资年化收益率</div>
-          <input
-            className="w-full h-16 px-2 rounded border text-lg"
-            title="年化收益率"
-            type="number"
-            step={0.01}
-            min={0}
-            value={investmentReturnRateInput}
-            onChange={(e) => setInvestmentReturnRateInput(e.target.value)}
-          />
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 p-6 sm:p-8">
+        <NumberInput
+          label="初始资金"
+          value={balanceInput}
+          onChange={setBalanceInput}
+          title="初始资金"
+          step={10000}
+        />
+        <NumberInput
+          label="年支出（初始）"
+          value={expenseInput}
+          onChange={setExpenseInput}
+          title="（预计）今年支出"
+          step={1000}
+        />
+        <NumberInput
+          label="年通膨率%"
+          value={inflationRateInput}
+          onChange={setInflationRateInput}
+          title="年通膨率%（推荐记为3.00）"
+          step={0.01}
+        />
+        <NumberInput
+          label="投资年化收益率%"
+          value={investmentReturnRateInput}
+          onChange={setInvestmentReturnRateInput}
+          title="年化收益率%"
+          step={0.01}
+        />
       </div>
-      <div className="px-8">
+      <div className="px-6 sm:px-8">
         <p>参考公式：</p>
         <MathJaxContext
           config={{
@@ -166,7 +147,7 @@ function LyingFlatCalculator(): JSX.Element {
           </MathJax>
         </MathJaxContext>
       </div>
-      <div className="px-8">
+      <div className="px-6 sm:px-8">
         <Chart
           balance={balance}
           expense={expense}

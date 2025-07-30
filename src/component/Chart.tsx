@@ -17,7 +17,6 @@ function Chart({
   const [isValid, setIsVaild] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(balance, expense, inflationRate, investmentReturnRate);
     if (
       balance == null ||
       expense == null ||
@@ -35,8 +34,8 @@ function Chart({
     while (currentBalance > 0 && data.length < 100) {
       if (currentBalance - currentExpense >= 0) {
         currentBalance -= currentExpense;
-        currentExpense *= 1 + inflationRate;
-        currentBalance *= 1 + investmentReturnRate;
+        currentExpense *= 1 + inflationRate / 100;
+        currentBalance *= 1 + investmentReturnRate / 100;
         if (currentBalance.toFixed(2) == "0.00") currentBalance = 0;
         data.push([data.length, currentBalance]);
       } else {
