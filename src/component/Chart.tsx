@@ -18,12 +18,7 @@ function Chart({
   const [isValid, setIsVaild] = useState<boolean>(false);
 
   useEffect(() => {
-    if (
-      balance == null ||
-      expense == null ||
-      inflationRate == null ||
-      investmentReturnRate == null
-    ) {
+    if (balance == null || expense == null || inflationRate == null || investmentReturnRate == null) {
       setIsVaild(false);
       return;
     }
@@ -35,17 +30,11 @@ function Chart({
     while (currentBalance.gt(0) && data.length <= 100) {
       if (currentBalance.sub(currentExpense).gte(0)) {
         currentBalance = currentBalance.sub(currentExpense);
-        currentExpense = currentExpense.mul(
-          new Decimal(inflationRate).div(100).plus(1)
-        );
-        currentBalance = currentBalance.mul(
-          new Decimal(investmentReturnRate).div(100).plus(1)
-        );
+        currentExpense = currentExpense.mul(new Decimal(inflationRate).div(100).plus(1));
+        currentBalance = currentBalance.mul(new Decimal(investmentReturnRate).div(100).plus(1));
         data.push([data.length, currentBalance.toNumber()]);
       } else {
-        const lastyear: Decimal = currentBalance
-          .div(currentExpense)
-          .plus(data.length - 1);
+        const lastyear: Decimal = currentBalance.div(currentExpense).plus(data.length - 1);
         data.push([lastyear.toNumber(), 0]);
         currentBalance = new Decimal(0);
       }
@@ -71,12 +60,7 @@ function Chart({
           const value = params[0].value;
           const year = value[0];
           const leftBalance = value[1];
-          return (
-            Number(year.toFixed(2)) +
-            " 年后剩余 " +
-            leftBalance.toFixed(2) +
-            " 元"
-          );
+          return Number(year.toFixed(2)) + " 年后剩余 " + leftBalance.toFixed(2) + " 元";
         },
       },
       xAxis: {

@@ -1,13 +1,7 @@
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import type { JSX } from "react";
 
-function MathEquation({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}): JSX.Element {
+function MathEquation({ label, value }: { label: string; value: string }): JSX.Element {
   return (
     <div>
       <p>{label}</p>
