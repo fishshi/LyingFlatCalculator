@@ -1,7 +1,7 @@
 import { useEffect, useState, type JSX } from "react";
-import { MathJax, MathJaxContext } from "better-react-mathjax";
 import Chart from "./component/Chart";
 import NumberInput from "./component/NumberInput";
+import MathEquation from "./component/MathEquation";
 
 function LyingFlatCalculator(): JSX.Element {
   const [balance, setBalance] = useState<number | null>(3000000);
@@ -131,21 +131,7 @@ function LyingFlatCalculator(): JSX.Element {
         />
       </div>
       <div className="px-6 sm:px-8">
-        <p>参考公式：</p>
-        <MathJaxContext
-          config={{
-            loader: { load: ["input/tex", "output/chtml"] },
-            options: {
-              renderActions: {
-                addMenu: [],
-              },
-            },
-          }}
-        >
-          <MathJax key={renderedEquation} className="select-none">
-            {renderedEquation}
-          </MathJax>
-        </MathJaxContext>
+        <MathEquation value={renderedEquation} label="参考公式: " />
       </div>
       <div className="px-6 sm:px-8">
         <Chart
