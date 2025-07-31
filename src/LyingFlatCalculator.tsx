@@ -2,10 +2,14 @@ import { useEffect, useState, type JSX } from "react";
 import Chart from "./component/Chart";
 import NumberInput from "./component/NumberInput";
 import MathEquation from "./component/MathEquation";
+import usePersistentState from "./hook/usePersistentState";
 
 function LyingFlatCalculator(): JSX.Element {
   const [balance, setBalance] = useState<number | null>(3000000);
-  const [balanceInput, setBalanceInput] = useState<string>("3000000");
+  const [balanceInput, setBalanceInput] = usePersistentState<string>(
+    "balanceInput",
+    "3000000"
+  );
   useEffect(() => {
     if (balanceInput == "" || isNaN(Number(balanceInput))) {
       setBalance(null);
@@ -15,7 +19,10 @@ function LyingFlatCalculator(): JSX.Element {
   }, [balanceInput]);
 
   const [expense, setExpense] = useState<number | null>(60000);
-  const [expenseInput, setExpenseInput] = useState<string>("60000");
+  const [expenseInput, setExpenseInput] = usePersistentState<string>(
+    "expenseInput",
+    "60000"
+  );
   useEffect(() => {
     if (expenseInput == "" || isNaN(Number(expenseInput))) {
       setExpense(null);
@@ -25,7 +32,8 @@ function LyingFlatCalculator(): JSX.Element {
   }, [expenseInput]);
 
   const [inflationRate, setInflationRate] = useState<number | null>(3.0);
-  const [inflationRateInput, setInflationRateInput] = useState<string>("3.00");
+  const [inflationRateInput, setInflationRateInput] =
+    usePersistentState<string>("inflationRateInput", "3.00");
   useEffect(() => {
     if (inflationRateInput == "" || isNaN(Number(inflationRateInput))) {
       setInflationRate(null);
@@ -38,7 +46,7 @@ function LyingFlatCalculator(): JSX.Element {
     number | null
   >(2.0);
   const [investmentReturnRateInput, setInvestmentReturnRateInput] =
-    useState<string>("2.00");
+    usePersistentState<string>("investmentReturnRateInput", "2.00");
   useEffect(() => {
     if (
       investmentReturnRateInput == "" ||
