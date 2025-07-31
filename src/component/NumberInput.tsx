@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import type { JSX } from "react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 function NumberInput({
   label,
@@ -38,17 +39,17 @@ function NumberInput({
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex flex-col">
           <button
             type="button"
-            className="text-xl leading-none px-1"
+            className="p-1 pb-[1px] rounded hover:bg-gray-200 active:scale-90 transition transform"
             onClick={() => handleStep("up")}
           >
-            ▲
+            <ChevronUp size={18} />
           </button>
           <button
             type="button"
-            className="text-xl leading-none px-1"
+            className="p-1 pt-[1px] rounded hover:bg-gray-200 active:scale-90 transition transform"
             onClick={() => handleStep("down")}
           >
-            ▼
+            <ChevronDown size={18} />
           </button>
         </div>
       </div>

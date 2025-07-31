@@ -6,7 +6,7 @@
 
 ## 页面展示
 
-[]()
+![](https://raw.githubusercontent.com/fishshi/Images/refs/heads/main/LyingFlatCalculator/example.png)
 
 ## 如何使用
 
