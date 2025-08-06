@@ -35,7 +35,11 @@ function Chart({
         data.push([data.length, currentBalance.toNumber()]);
       } else {
         const lastyear: Decimal = currentBalance.div(currentExpense).plus(data.length - 1);
-        data.push([lastyear.toNumber(), 0]);
+        if (lastyear.toFixed(2) == data[data.length - 1][0].toFixed(2)) {
+          data[data.length - 1][1] = 0;
+        } else {
+          data.push([lastyear.toNumber(), 0]);
+        }
         currentBalance = new Decimal(0);
       }
     }
@@ -60,7 +64,7 @@ function Chart({
           const value = params[0].value;
           const year = value[0];
           const leftBalance = value[1];
-          return Number(year.toFixed(2)) + " 年后剩余 " + leftBalance.toFixed(2) + " 元";
+          return year.toFixed(2) + " 年后剩余 " + leftBalance.toFixed(2) + " 元";
         },
       },
       xAxis: {
@@ -102,7 +106,7 @@ function Chart({
         year > 100 ? (
           <div>还能活超过 100 年</div>
         ) : (
-          <div>还能活 {Number(year.toFixed(2))} 年</div>
+          <div>还能活 {year.toFixed(2)} 年</div>
         )
       ) : (
         <div>数据不完整，无法计算</div>

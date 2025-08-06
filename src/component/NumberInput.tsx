@@ -17,6 +17,7 @@ function NumberInput({
 }): JSX.Element {
   const toFixedValue = step > 1 ? 0 : 2;
   const handleStep = (direction: "up" | "down") => {
+    if (!value) value = "0";
     const num: Decimal = new Decimal(value);
     let newVal = direction === "up" ? num.plus(step) : num.sub(step);
     if (newVal.lt(0)) newVal = new Decimal(0);
